@@ -42,6 +42,9 @@ module.exports.handler = async (event) => {
       };
     }
 
+    // Hardcoded for debugging
+    console.log('API Key:', process.env.STATS_PERFORM_API_KEY ? 'Present' : 'Missing');
+
     // Configure API request
     const config = {
       headers: {
@@ -50,44 +53,22 @@ module.exports.handler = async (event) => {
       }
     };
 
-    const STATS_PERFORM_API_URL = 'https://api.stats.com/v1';
-
-    // Handle different data type requests
-    let endpoint;
-    switch(dataType) {
-      case 'scores':
-        endpoint = `/teams/${teamId}/scores`;
-        break;
-      case 'roster':
-        endpoint = `/teams/${teamId}/roster`;
-        break;
-      case 'stats':
-        endpoint = `/teams/${teamId}/stats`;
-        break;
-      default:
-        return {
-          statusCode: 400,
-          body: JSON.stringify({ error: 'Invalid data type' }),
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-          }
-        };
-    }
-
-    // Make request to Stats Perform API
-    const response = await axios.get(`${STATS_PERFORM_API_URL}${endpoint}`, config);
+    // Hardcoded test to verify basic connection
+    const testResponse = await axios.get('https://jsonplaceholder.typicode.com/todos/1');
 
     return {
       statusCode: 200,
-      body: JSON.stringify(response.data),
+      body: JSON.stringify({
+        message: 'Test successful',
+        testData: testResponse.data
+      }),
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*'
       }
     };
   } catch (error) {
-    console.error('API Error:', error);
+    console.error('Full Error:', error);
 
     return {
       statusCode: error.response?.status || 500,
